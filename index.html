@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guest Check-In</title>
+<style>
+* { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+body { margin: 0; background: linear-gradient(135deg, #0f172a, #1e3a8a); color: white; min-height: 100vh; }
+.top-bar { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 12px; }
+.top-bar button { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap; }
+.btn-view { background: linear-gradient(135deg, #10b981, #047857); color: white; }
+.secondary { background: rgba(255,255,255,0.2); color: white; }
+.container { height: 100vh; display: flex; justify-content: center; align-items: center; }
+.card { background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); padding: 40px; border-radius: 20px; width: 380px; text-align: center; }
+input { width: 100%; padding: 14px; border-radius: 10px; border: none; margin-bottom: 10px; font-size: 15px; }
+button { width: 100%; padding: 10px; border-radius: 10px; border: none; margin-top: 5px; cursor: pointer; }
+.primary { background: #3b82f6; color: white; }
+.popup { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
+.popup-content { background: white; color: black; padding: 25px; border-radius: 12px; width: 90%; max-width: 900px; max-height: 85vh; overflow: auto; }
+.dashboard { display: flex; gap: 10px; margin-bottom: 15px; }
+.card-stat { flex: 1; background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center; }
+.footer { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 12px; color: rgba(255,255,255,0.7); letter-spacing: 0.5px; }
+.footer b { color: #3b82f6; }
+.card-stat.green { background: #d1fae5; }
+.card-stat.orange { background: #fde68a; }
+.stat-title { font-size: 12px; color: #475569; }
+.stat-value { font-size: 20px; font-weight: bold; }
+table { width: 100%; border-collapse: collapse; }
+td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+.status-ok { color: green; }
+.status-wait { color: orange; }
+.simple-status { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.status-local-dot { color: #94a3b8; }
+.status-live-dot { color: #10b981; }
+.settings-input-group { display: flex; gap: 8px; margin-top: 10px; margin-bottom: 15px; }
+.settings-input-group input { margin: 0; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
+.settings-input-group button { width: auto; margin: 0; padding: 10px 16px; white-space: nowrap; }
+.settings-section-title { display: block; font-size: 15px; font-weight: 600; margin-top: 15px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; }
+.btn-upload-setting { background: #4f46e5; color: white; width: auto; padding: 8px 16px; display: inline-block; margin-bottom: 15px; }
+.settings-table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+.settings-table th, .settings-table td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; }
+.settings-table th { background-color: #f8fafc; font-weight: 600; font-size: 13px; color: #334155; }
+.settings-table td input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; margin: 0; }
+.text-center { text-align: center; }
+
+/* INSTRUCTIONS HUD */
+.mini-instructions { background: rgba(255, 255, 255, 0.12); font-size: 11px; padding: 8px 12px; border-radius: 8px; text-align: left; margin-bottom: 15px; color: #cbd5e1; line-height: 1.5; }
+.mini-instructions span { color: #60a5fa; font-weight: bold; font-family: monospace; }
+
+/* SUGGESTION LIST SYSTEM */
+.suggestion-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+.suggestion-card { width: 100%; text-align: left; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.15s; margin-top: 0; outline: none; }
+.suggestion-card:hover, .suggestion-card.focused { background: #eff6ff; border-color: #3b82f6; transform: translateY(-1px); }
+.sug-info { font-size: 15px; color: #1e293b; font-weight: 500; line-height: 1.4; }
+.sug-action-tag { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; color: #2563eb; text-transform: uppercase; }
+.sug-checked-tag { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; color: #10b981; text-transform: uppercase; }
+
+.modal-instruction-hint { font-size: 12px; color: #64748b; margin-bottom: 15px; background: #f8fafc; padding: 8px; border-radius: 6px; border-left: 3px solid #3b82f6; }
+.modal-instruction-hint span { font-weight: bold; font-family: monospace; color: #1e3a8a; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span id="simpleStatusText" class="simple-status status-local-dot">● Local Mode</span>
+  <button onclick="openSettings()" class="secondary">Settings</button>
+  <button class="btn-view" onclick="viewMasterlist()">Masterlist</button>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>Guest Check-In</h2>
+    
+    <div class="mini-instructions">
+      💡 <b>Operator Instructions:</b><br>
+      • Type full/partial details & press <span>Enter</span>.<br>
+      • Modal hotkeys activate automatically inside lists.
+    </div>
+
+    <form onsubmit="event.preventDefault(); checkName();" style="margin-top: 10px;">
+      <input type="text" id="nameInput" placeholder="Enter guest details..." autocomplete="off">
+      <button class="primary">Check</button>
+    </form>
+    <button class="secondary" onclick="resetForm()">Refresh</button>
+  </div>
+</div>
+
+<input type="file" id="csvFile" hidden onchange="loadCSV(event)">
+
+<div id="popup" class="popup" onclick="outside(event)">
+  <div class="popup-content">
+    <h3 id="title"></h3>
+    <div id="content"></div>
+    <div id="actions"></div>
+  </div>
+</div>
+
+<div class="footer">Powered by: <b>Broadimagi</b></div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz4gaqDwu-CKdhSTfMJG7K9kE71LFGJGax1r1bv4-zMr7F5oY0WYePMBH46eGWFl53LFA/exec"; 
+
+let masterlist = JSON.parse(localStorage.getItem("masterlist")) || [];
+let settings = JSON.parse(localStorage.getItem("settings")) || { showColumns: [], confirmColumns: [], suggestionColumns: [] };
+let current = null, currentIndex = null, isLiveMode = false;
+
+let currentPopupType = ""; 
+let cachedSuggestionsHTML = ""; 
+let currentFocusIdx = -1; 
+
+const popupNode = document.getElementById("popup");
+const titleNode = document.getElementById("title");
+const contentNode = document.getElementById("content");
+const actionsNode = document.getElementById("actions");
+const inputNode = document.getElementById("nameInput");
+const statusNode = document.getElementById("simpleStatusText");
+
+window.addEventListener("DOMContentLoaded", () => {
+  const savedSheet = localStorage.getItem("connectedSheetUrl");
+  savedSheet ? fetchLiveMasterlist(savedSheet) : updateModeUI(false);
+  inputNode.focus();
+});
+
+function updateModeUI(live) {
+  isLiveMode = live;
+  statusNode.innerText = live ? "● Live Mode" : "● Local Mode";
+  statusNode.className = live ? "simple-status status-live-dot" : "simple-status status-local-dot";
+}
+
+function connectSheet() {
+  const url = document.getElementById("sheetUrlPopupInput").value.trim();
+  if(!url) return disconnectSheet(true);
+  fetchLiveMasterlist(url);
+}
+
+function disconnectSheet(bypassPrompt = false) {
+  if (!bypassPrompt && prompt("Enter admin password to disconnect sheet:") !== "Broadimagi") {
+    return showPopup("Denied", "Wrong password", "", "other");
+  }
+  localStorage.removeItem("connectedSheetUrl");
+  masterlist = JSON.parse(localStorage.getItem("masterlist")) || [];
+  settings.showColumns = []; settings.confirmColumns = []; settings.suggestionColumns = [];
+  localStorage.setItem("settings", JSON.stringify(settings));
+  updateModeUI(false);
+  openSettings();
+}
+
+async function fetchLiveMasterlist(targetUrl) {
+  try {
+    if(popupNode.style.display !== "flex") showPopup("Loading...", "Fetching real-time structural logs...", "", "other");
+    const response = await fetch(`${API_URL}?sheetId=${encodeURIComponent(targetUrl)}`);
+    const data = await response.json();
+    if (data.error) {
+      updateModeUI(false);
+      return showPopup("Access Denied", `Google API Error: ${data.error}`, "", "other");
+    }
+    localStorage.setItem("connectedSheetUrl", targetUrl);
+    masterlist = data;
+    updateModeUI(true);
+    if (masterlist.length > 0 && !settings.showColumns.length) {
+      const headers = Object.keys(masterlist[0]).filter(x => x !== "rowId" && x !== "status" && x !== "time");
+      settings.showColumns = [...headers]; settings.confirmColumns = [...headers]; settings.suggestionColumns = [...headers];
+      localStorage.setItem("settings", JSON.stringify(settings));
+    }
+    closePopup();
+  } catch (err) {
+    updateModeUI(false);
+    showPopup("Sync Offline", "Could not connect to database endpoint.", "", "other");
+  }
+}
+
+function openFile(){ document.getElementById("csvFile").click(); }
+
+function loadCSV(e) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const rows = ev.target.result.split("\n");
+    const headers = rows[0].split(",").map(h => h.trim());
+    let added = 0;
+    rows.slice(1).forEach(r => {
+      if (!r.trim()) return;
+      let obj = {};
+      r.split(",").forEach((v, i) => obj[headers[i]] = v.trim());
+      obj.status = ""; obj.time = "";
+      if (!masterlist.some(x => headers.every(h => x[h] === obj[h]))) {
+        masterlist.push(obj);
+        added++;
+      }
+    });
+    if (!settings.showColumns.length) {
+      settings.showColumns = [...headers]; settings.confirmColumns = [...headers]; settings.suggestionColumns = [...headers];
+    }
+    localStorage.setItem("masterlist", JSON.stringify(masterlist));
+    localStorage.setItem("settings", JSON.stringify(settings));
+    showPopup("Upload Complete", `Added: ${added}`, "", "other");
+  };
+  reader.readAsText(e.target.files[0]);
+}
+
+function checkName(){
+  const val = inputNode.value.toLowerCase().trim();
+  if(!val) return;
+  
+  // FIXED KEYWORD ENGINE: Finds records matching query criteria across properties
+  const sug = masterlist.filter(i => Object.entries(i).some(([k,v]) => k !== "rowId" && k !== "status" && k !== "time" && String(v).toLowerCase().includes(val))).slice(0,5);
+  if(!sug.length) return showPopup("Not Found","No match found.", "", "other");
+  
+  currentFocusIdx = 0; 
+  let html = `
+    <div class="modal-instruction-hint">⌨️ Suggestions Hotkeys: Use <span>↑</span> / <span>↓</span> to navigate, <span>Enter</span> to select, <span>Backspace</span> to cancel.</div>
+    <div class="suggestion-container">` + sug.map((i, index) => {
+    let idx = masterlist.indexOf(i);
+    let label = settings.suggestionColumns.map(c => i[c]).filter(Boolean).join(" — ");
+    let isChecked = i.status === "Checked" || i.status === "Checked-in";
+    let actionLabel = isChecked ? `<span class="sug-checked-tag">✓ Already Checked-In</span>` : `<span class="sug-action-tag">→ Tap to Verify & Check-In</span>`;
+    return `
+      <button class="suggestion-card ${index === 0 ? 'focused' : ''}" data-idx="${idx}" onclick="selectSuggestion(${idx}, true)">
+        <div class="sug-info">${label || "Guest Information Profile"}</div>
+        ${actionLabel}
+      </button>`;
+  }).join("") + `</div>`;
+  
+  cachedSuggestionsHTML = html; 
+  showPopup("Select Guest Profile Matched", html, "", "suggestions");
+}
+
+function selectSuggestion(index, triggeredFromSuggestionsList = true){
+  currentIndex = index;
+  current = masterlist[index];
+  let content = `
+    <div class="modal-instruction-hint">⌨️ Confirmation Hotkeys: Press <span>Enter</span> to Confirm Check-In, <span>Backspace</span> to go back.</div>
+    <div style="font-size:16px; line-height:1.6; color:#334155;">` + 
+    settings.confirmColumns.map(c => `<b>${c}:</b> ${current[c] || ""}`).join("<br>") + 
+    `</div>`;
+  
+  if(current.status === "Checked" || current.status === "Checked-in"){
+    let backBtn = triggeredFromSuggestionsList ? 
+      `<button onclick="goBackToSuggestions()" style="background:#64748b;color:white;">Go Back (Backspace)</button>` : 
+      `<button onclick="closePopup()" style="background:#64748b;color:white;">Close</button>`;
+    return showPopup("<span style='color:#ef4444;'>❌ Action Blocked</span>", `<p style="color:#ef4444; font-weight:600; margin-bottom:15px;">This guest has already checked in!</p><b>Logged Time:</b> ${current.time || 'No timestamp recorded.'}<br><br>${content}`, backBtn, "confirmation");
+  }
+  
+  let actionsHTML = `<button class="primary" onclick="checkIn()" style="background:#10b981; font-weight:600; padding:12px;">Confirm Check-In (Enter)</button>`;
+  if(triggeredFromSuggestionsList) {
+    actionsHTML += `<button onclick="goBackToSuggestions()" style="background:#64748b; color:white; margin-top:8px;">Go Back (Backspace)</button>`;
+  }
+  showPopup("Verify Profile Data & Confirm", content, actionsHTML, "confirmation");
+}
+
+function goBackToSuggestions() {
+  showPopup("Select Guest Profile Matched", cachedSuggestionsHTML, "", "suggestions");
+  setTimeout(() => {
+    const suggestionCards = document.querySelectorAll(".suggestion-card");
+    if(suggestionCards.length > 0) {
+      if(currentFocusIdx < 0 || currentFocusIdx >= suggestionCards.length) currentFocusIdx = 0;
+      updateCardFocusUI(suggestionCards);
+    }
+  }, 10);
+}
+
+async function checkIn(){
+  if (currentIndex === null) return;
+  const time = new Date().toLocaleString();
+  if (isLiveMode) {
+    const targetGuest = masterlist[currentIndex];
+    showPopup("Saving...", "Pushing updates live...", "", "other");
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ sheetId: localStorage.getItem("connectedSheetUrl"), rowId: targetGuest.rowId, status: "Checked", time: time })
+      });
+      const result = await response.json();
+      if(!result.success) return showPopup("Sync Refused", "Error: " + result.error, "", "other");
+    } catch (err) {
+      return showPopup("Network Error", "Sync failed.", "", "other");
+    }
+  }
+  masterlist[currentIndex].status = "Checked";
+  masterlist[currentIndex].time = time;
+  if (!isLiveMode) localStorage.setItem("masterlist", JSON.stringify(masterlist));
+  let content = settings.confirmColumns.map(c => `<b>${c}:</b> ${masterlist[currentIndex][c] || ""}`).join("<br>");
+  showPopup("Checked-In Successfully", `${content}<hr><b>Status:</b> Checked<br><b>Time:</b> ${time}`, `<button onclick="afterCheckIn()" style="background:#10b981;color:white;">Close (Enter)</button>`, "other");
+}
+
+function openSettings(){
+  const savedUrl = localStorage.getItem("connectedSheetUrl") || "";
+  const headers = Object.keys(masterlist[0]||{}).filter(x => x !== "status" && x !== "time" && x !== "rowId");
+  let hHtml = `
+    <span class="settings-section-title">Database Integration Link</span>
+    <div class="settings-input-group">
+      <input type="text" id="sheetUrlPopupInput" value="${savedUrl}" placeholder="Paste Google Sheet URL here...">
+      <button onclick="connectSheet()" class="primary" style="background:#4f46e5;">Link Sheet</button>
+      ${savedUrl ? `<button onclick="disconnectSheet()" style="background:#ef4444; color:white;">Unlink</button>` : ''}
+    </div>
+  `;
+  if (!isLiveMode) hHtml += `<span class="settings-section-title">Local CSV Import</span><button class="btn-upload-setting" onclick="openFile()">Choose and Upload File</button>`;
+  hHtml += `<span class="settings-section-title">Display & Presentation Rules Matrix</span><table class="settings-table"><thead><tr><th>Column Field Name</th><th class="text-center" style="width: 120px;">Masterlist View</th><th class="text-center" style="width: 120px;">Confirmation</th><th class="text-center" style="width: 120px;">Suggestions</th></tr></thead><tbody>`;
+  if (headers.length === 0) {
+    hHtml += `<tr><td colspan="4" style="text-align: center; color: #64748b; padding: 20px;"><i>No database columns loaded. Upload a CSV or Link a Sheet first.</i></td></tr>`;
+  } else {
+    headers.forEach(h => {
+      hHtml += `<tr><td><b>${h}</b></td><td class="text-center"><input type="checkbox" ${settings.showColumns.includes(h)?"checked":""} onchange="toggleGridSetting('showColumns', '${h}', this.checked)"></td><td class="text-center"><input type="checkbox" ${settings.confirmColumns.includes(h)?"checked":""} onchange="toggleGridSetting('confirmColumns', '${h}', this.checked)"></td><td class="text-center"><input type="checkbox" ${settings.suggestionColumns.includes(h)?"checked":""} onchange="toggleGridSetting('suggestionColumns', '${h}', this.checked)"></td></tr>`;
+    });
+  }
+  hHtml += `</tbody></table>`;
+  showPopup("System Management Configuration Control", hHtml, "", "other");
+}
+
+function toggleGridSetting(type, field, isChecked) {
+  if (isChecked) {
+    if (!settings[type].includes(field)) settings[type].push(field);
+  } else {
+    settings[type] = settings[type].filter(x => x !== field);
+  }
+  localStorage.setItem("settings", JSON.stringify(settings));
+}
+
+function viewMasterlist(){
+  if (!masterlist.length) return showPopup("No Data","No uploaded records mapped.", "", "other");
+  const total = masterlist.length, checked = masterlist.filter(x => x.status === "Checked").length, pending = total - checked;
+  let headers = settings.showColumns.length ? settings.showColumns : Object.keys(masterlist[0]).filter(x => x !== "status" && x !== "time" && x !== "rowId");
+  let headerRow = headers.map(h => `<th>${h}</th>`).join("") + `<th>Status</th>`;
+  let rows = masterlist.map(item => {
+    return `<tr>${headers.map(h => `<td>${item[h] || ""}</td>`).join("")}<td>${item.status === "Checked" ? `<span class="status-ok">Checked (${item.time})</span>` : `<span class="status-wait">Pending</span>`}</td></tr>`;
+  }).join("");
+  let buttons = isLiveMode ? `<div style="margin-top:15px;text-align:center;"><button onclick="fetchLiveMasterlist(localStorage.getItem('connectedSheetUrl'))">Refresh Live Sync Records</button></div>` : `<div style="margin-top:15px;text-align:center;"><button onclick="download()">Download</button></div><div style="margin-top:10px;text-align:center;"><button onclick="resetAll()" style="background:#7c3aed;color:white;">Clear All Status</button></div><div style="margin-top:10px;text-align:center;"><button onclick="clearAllData()" style="background:#ef4444;color:white;">Clear All Uploaded Data</button></div>`;
+  showPopup("Masterlist", `<div class="dashboard"><div class="card-stat"><div class="stat-title">Total</div><div class="stat-value">${total}</div></div><div class="card-stat green"><div class="stat-title">Checked</div><div class="stat-value">${checked}</div></div><div class="card-stat orange"><div class="stat-title">Pending</div><div class="stat-value">${pending}</div></div></div><table><tr>${headerRow}</tr>${rows}</table>${buttons}`, "", "other");
+}
+
+function download() {
+  if(isLiveMode) return;
+  let csv = Object.keys(masterlist[0]).join(",") + "\n";
+  masterlist.forEach(item => { csv += Object.values(item).join(",") + "\n"; });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv]));
+  a.download = "attendance.csv";
+  a.click();
+}
+
+function resetAll() {
+  if(isLiveMode || prompt("Enter admin password:") !== "Broadimagi") return showPopup("Denied", "Identity mapping error.", "", "other");
+  masterlist.forEach(item => { item.status = ""; item.time = ""; });
+  localStorage.setItem("masterlist", JSON.stringify(masterlist));
+  showPopup("Reset Complete", "All statuses cleared.", "", "other");
+}
+
+function clearAllData() {
+  if(isLiveMode || prompt("Enter admin password:") !== "Broadimagi" || !confirm("Download first?")) return;
+  download();
+  setTimeout(() => {
+    if (!confirm("Delete ALL data?")) return;
+    masterlist = []; localStorage.removeItem("masterlist");
+    showPopup("Deleted", "All data removed.", "", "other");
+  }, 500);
+}
+
+function updateCardFocusUI(cards) {
+  cards.forEach((card, idx) => {
+    if (idx === currentFocusIdx) {
+      card.classList.add("focused");
+      card.scrollIntoView({ block: "nearest" });
+    } else {
+      card.classList.remove("focused");
+    }
+  });
+}
+
+function afterCheckIn(){ closePopup(); inputNode.value = ""; inputNode.focus(); }
+
+function showPopup(t, c, a = "", type = "other"){ 
+  titleNode.innerHTML = t; 
+  contentNode.innerHTML = c; 
+  actionsNode.innerHTML = a; 
+  currentPopupType = type;
+  popupNode.style.display = "flex"; 
+}
+
+function closePopup(){ 
+  popupNode.style.display = "none"; 
+  currentPopupType = "";
+  inputNode.focus(); 
+}
+
+function outside(e){ if(e.target.id === "popup") closePopup(); }
+function resetForm(){ inputNode.value = ""; inputNode.focus(); }
+
+/* GLOBAL HOTKEY ENGINE ISOLATED TO SPECIFIC MODAL CONTEXTS */
+document.addEventListener("keydown", e => {
+  const isPopupOpen = popupNode.style.display === "flex";
+  if (!isPopupOpen) return; // Keep standard inputs completely unaltered out of modals
+
+  // 1. SUGGESTIONS LIST MODAL STATE
+  if (currentPopupType === "suggestions") {
+    const suggestionCards = document.querySelectorAll(".suggestion-card");
+    
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      closePopup();
+    } 
+    else if (e.key === "ArrowDown" && suggestionCards.length > 0) {
+      e.preventDefault();
+      currentFocusIdx = (currentFocusIdx + 1) % suggestionCards.length;
+      updateCardFocusUI(suggestionCards);
+    } 
+    else if (e.key === "ArrowUp" && suggestionCards.length > 0) {
+      e.preventDefault();
+      currentFocusIdx = (currentFocusIdx - 1 + suggestionCards.length) % suggestionCards.length;
+      updateCardFocusUI(suggestionCards);
+    } 
+    else if (e.key === "Enter" && suggestionCards.length > 0) {
+      e.preventDefault();
+      const activeCard = suggestionCards[currentFocusIdx];
+      if (activeCard) activeCard.click();
+    }
+  } 
+  // 2. CONFIRMATION VERIFICATION MODAL STATE
+  else if (currentPopupType === "confirmation") {
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      cachedSuggestionsHTML ? goBackToSuggestions() : closePopup();
+    } 
+    else if (e.key === "Enter") {
+      e.preventDefault();
+      const primaryActionBtn = actionsNode.querySelector("button");
+      if (primaryActionBtn) primaryActionBtn.click();
+    }
+  } 
+  // 3. FALLBACK MODAL ALERTS
+  else {
+    if (e.key === "Enter" || e.key === "Backspace") {
+      const actionBtn = actionsNode.querySelector("button");
+      if (actionBtn) { e.preventDefault(); actionBtn.click(); } else { closePopup(); }
+    }
+  }
+
+  if (e.key === "Escape") closePopup();
+});
+</script>
+</body>
+</html>
