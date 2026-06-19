@@ -102,28 +102,37 @@ input, select { width: 100%; padding: 14px; border-radius: 10px; border: none; m
 body.bg-dark-contrast input { background: white; color: black; }
 body.bg-light-contrast input { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
 select { background: white; color: black; cursor: pointer; }
-button { width: 100%; padding: 10px; border-radius: 10px; border: none; margin-top: 5px; cursor: pointer; }
+button { width: 100%; padding: 10px; border-radius: 10px; border: none; margin-top: 5px; cursor: pointer; font-weight: 500; font-size: 14px; }
 .primary { background: var(--primary-color); color: white; }
 body.bg-light-contrast .primary { filter: brightness(0.85); }
 .popup { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(4px); }
-.popup-content { background: white; color: black; padding: 25px; border-radius: 12px; width: 90%; max-width: 950px; max-height: 85vh; overflow: auto; }
-.dashboard { display: flex; gap: 10px; margin-bottom: 15px; }
-.card-stat { flex: 1; background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center; }
+.popup-content { background: #ffffff; color: #1e293b; padding: 30px; border-radius: 16px; width: 95%; max-width: 1000px; max-height: 85vh; overflow: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+.dashboard { display: flex; gap: 12px; margin-bottom: 24px; }
+.card-stat { flex: 1; background: #f8fafc; padding: 16px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; box-shadow: sm; }
 .footer { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 12px; letter-spacing: 0.5px; z-index: 2; transition: color 0.3s; }
 body.bg-dark-contrast .footer { color: rgba(255,255,255,0.7); text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
 body.bg-light-contrast .footer { color: rgba(15, 23, 42, 0.8); text-shadow: none; }
 .footer b, .footer a { color: var(--primary-color); filter: brightness(1.2); text-decoration: none; }
 body.bg-light-contrast .footer b, body.bg-light-contrast .footer a { filter: brightness(0.8); }
 .footer a:hover { text-decoration: underline; }
-.card-stat.green { background: #d1fae5; }
-.card-stat.orange { background: #fde68a; }
-.card-stat.blue { background: #dbeafe; }
-.stat-title { font-size: 12px; color: #475569; }
-.stat-value { font-size: 20px; font-weight: bold; }
-table { width: 100%; border-collapse: collapse; }
-td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-.status-ok { color: green; }
-.status-wait { color: orange; }
+.card-stat.green { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
+.card-stat.orange { background: #fffbeb; border-color: #fef3c7; color: #78350f; }
+.card-stat.blue { background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a; }
+.stat-title { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 4px; }
+.card-stat.green .stat-title { color: #166534; }
+.card-stat.orange .stat-title { color: #9a3412; }
+.card-stat.blue .stat-title { color: #1e40af; }
+.stat-value { font-size: 24px; font-weight: 800; }
+.table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; background: #ffffff; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; }
+th { background-color: #f1f5f9; color: #475569; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; padding: 14px 16px; border-bottom: 2px solid #e2e8f0; text-align: left; }
+td { padding: 14px 16px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 14px; color: #334155; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background-color: #f8fafc; }
+.badge { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 9999px; gap: 6px; }
+.badge-success { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.badge-pending { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+.badge-time { font-size: 11px; font-weight: 400; color: #64748b; margin-top: 2px; display: block; }
 .simple-status { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
 .device-badge { font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; }
 body.bg-dark-contrast .device-badge { background: rgba(255,255,255,0.1); color: #e2e8f0; }
@@ -139,7 +148,7 @@ body.bg-light-contrast .status-local-dot { color: #475569; }
 .btn-upload-setting { background: #4f46e5; color: white; width: auto; padding: 8px 16px; display: inline-block; margin-bottom: 15px; border-radius: 8px; }
 .settings-table { width: 100%; margin-top: 10px; border-collapse: collapse; }
 .settings-table th, .settings-table td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; }
-.settings-table th { background-color: #f8fafc; font-weight: 600; font-size: 13px; color: #334155; }
+.settings-table th { background-color: #f8fafc; font-weight: 600; font-size: 13px; color: #334155; border-bottom: 2px solid #e2e8f0; }
 .settings-table td input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; margin: 0; }
 .text-center { text-align: center; }
 .mini-instructions { font-size: 11px; padding: 8px 12px; border-radius: 8px; text-align: left; margin-bottom: 12px; line-height: 1.5; transition: background 0.3s, color 0.3s; }
@@ -196,6 +205,8 @@ body.bg-light-contrast .toast-notification {
 }
 .toast-notification .toast-dot { color: #10b981; font-size: 10px; }
 @keyframes toastFadeIn { to { opacity: 1; transform: translateY(0); } }
+.masterlist-actions { display: flex; justify-content: center; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+.masterlist-actions button { width: auto; min-width: 140px; padding: 12px 20px; border-radius: 8px; }
 </style>
 </head>
 <body class="bg-dark-contrast">
@@ -249,7 +260,7 @@ body.bg-light-contrast .toast-notification {
 <input type="file" id="bgImageFile" hidden accept="image/*" onchange="loadCustomBackgroundImage(event)">
 <div id="popup" class="popup" onclick="outside(event)">
 <div class="popup-content">
-<h3 id="title"></h3>
+<h3 id="title" style="margin-top:0; font-size:20px; color:#0f172a; border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:20px;"></h3>
 <div id="content"></div>
 <div id="actions"></div>
 </div>
@@ -372,7 +383,10 @@ localStorage.setItem("connectedSheetUrl", targetUrl);
 masterlist = data; updateModeUI(true);
 if (masterlist.length > 0 && (!settings.showColumns || !settings.showColumns.length)) {
 const headers = Object.keys(masterlist[0]).filter(x => x !== "rowId" && x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time");
-settings.showColumns = [...headers]; settings.confirmColumns = [...headers]; settings.suggestionColumns = [...headers]; settings.notificationColumns = [...headers];
+settings.showColumns = headers.slice(0, 4); settings.suggestionColumns = headers.slice(0, 2); settings.confirmColumns = headers.slice(0, 2); 
+// Sift for a column matching "name"
+const matchedNameCol = headers.find(h => h.toLowerCase() === "name");
+settings.notificationColumns = matchedNameCol ? [matchedNameCol] : headers.slice(0, 1);
 localStorage.setItem("settings", JSON.stringify(settings));
 }
 refreshFrontDashboardCounters();
@@ -445,7 +459,11 @@ rows.slice(1).forEach(r => {
 if (!r.trim()) return; let obj = {}; r.split(",").forEach((v, i) => obj[headers[i]] = v.trim()); obj.Status = ""; obj.Time = ""; obj.UID = "";
 if (!masterlist.some(x => headers.every(h => x[h] === obj[h]))) { masterlist.push(obj); added++; }
 });
-if (!settings.showColumns || !settings.showColumns.length) { settings.showColumns = [...headers]; settings.confirmColumns = [...headers]; settings.suggestionColumns = [...headers]; settings.notificationColumns = [...headers]; }
+if (!settings.showColumns || !settings.showColumns.length) { 
+settings.showColumns = headers.slice(0, 4); settings.suggestionColumns = headers.slice(0, 2); settings.confirmColumns = headers.slice(0, 2); 
+const matchedNameCol = headers.find(h => h.toLowerCase() === "name");
+settings.notificationColumns = matchedNameCol ? [matchedNameCol] : headers.slice(0, 1);
+}
 localStorage.setItem("masterlist", JSON.stringify(masterlist)); localStorage.setItem("settings", JSON.stringify(settings));
 refreshFrontDashboardCounters();
 showPopup("Upload Complete", `Added: ${added}`, "", "other");
@@ -469,7 +487,7 @@ for (let i = 0; i < masterlist.length; i++) {
 if(!sug.length) return showPopup("Not Found","No match found for configured columns.", "", "other");
 sug.sort((a, b) => (activeSearchCols.some(c => String(b[c]).toLowerCase() === val) ? 1 : 0) - (activeSearchCols.some(c => String(a[c]).toLowerCase() === val) ? 1 : 0));
 const displayLimit = sug.slice(0, 5); currentFocusIdx = 0;
-let html = `<div class="modal-instruction-hint"> ⌨️  Suggestions Hotkeys: Use <span>↑</span> / <span>↓</span> to navigate, <span>Enter</span> to select.</div><div class="suggestion-container">` + displayLimit.map((i, index) => {
+let html = `<div class="modal-instruction-hint"> ⌨  Suggestions Hotkeys: Use <span>↑</span> / <span>↓</span> to navigate, <span>Enter</span> to select.</div><div class="suggestion-container">` + displayLimit.map((i, index) => {
 let idx = masterlist.indexOf(i), label = settings.suggestionColumns.map(c => i[c]).filter(Boolean).join(" — ");
 return `<button class="suggestion-card ${index === 0 ? 'focused' : ''}" data-idx="${idx}" onclick="selectSuggestion(${idx}, true)"><div class="sug-info">${label || "Guest Info"}</div>${i.Status==="Checked"||i.status==="Checked"||i.Status==="Checked-in"?`<span class="sug-checked-tag">✓ Already Checked-In</span>`:`<span class="sug-action-tag">→ Tap to Verify & Check-In</span>`}</button>`;
 }).join("") + `</div>`;
@@ -477,9 +495,9 @@ cachedSuggestionsHTML = html; showPopup("Select Guest Profile Matched", html, ""
 }
 function selectSuggestion(index, triggeredFromSuggestionsList = true){
 currentIndex = index; current = masterlist[index];
-let content = `<div class="modal-instruction-hint"> ⌨️  Confirmation Hotkeys: Press <span>Enter</span> to Confirm, <span>Backspace</span> to go back.</div><div style="font-size:16px; line-height:1.6; color:#334155;">` + settings.confirmColumns.map(c => `<b>${c}:</b> ${current[c] || ""}`).join("<br>") + `</div>`;
+let content = `<div class="modal-instruction-hint"> ⌨  Confirmation Hotkeys: Press <span>Enter</span> to Confirm, <span>Backspace</span> to go back.</div><div style="font-size:16px; line-height:1.6; color:#334155;">` + settings.confirmColumns.map(c => `<b>${c}:</b> ${current[c] || ""}`).join("<br>") + `</div>`;
 if(current.Status === "Checked" || current.status === "Checked" || current.Status === "Checked-in"){
-return showPopup("<span style='color:#ef4444;'> ❌  Action Blocked</span>", `<p style="color:#ef4444; font-weight:600; margin-bottom:15px;">Already checked in!</p><b>Logged Time:</b> ${current.Time || current.time || 'No timestamp.'}<br><br>${content}`, triggeredFromSuggestionsList ? `<button onclick="goBackToSuggestions()" style="background:#64748b;color:white;">Go Back</button>` : `<button onclick="closePopup()" style="background:#64748b;color:white;">Close</button>`, "confirmation");
+return showPopup("<span style='color:#ef4444;'> ❌  Action Blocked</span>", `<p style="color:#ef4444; font-weight:600; margin-bottom:15px;">Already checked in!</p><b>Logged Time:</b> ${current.Time || current.time || 'No timestamp.'}<br><br>${content}`, triggeredFromSuggestionsList ? `<button onclick="goBackToSuggestions()" style="background:#64748b;color:white;">Go Back</button>` : `<button onclick="afterCheckIn()" style="background:#64748b;color:white;">Close</button>`, "confirmation");
 }
 showPopup("Verify Profile Data & Confirm", content, `<button class="primary" onclick="checkIn()" style="background:#10b981; font-weight:600; padding:12px;">Confirm Check-In (Enter)</button>` + (triggeredFromSuggestionsList ? `<button onclick="goBackToSuggestions()" style="background:#64748b; color:white; margin-top:8px;">Go Back</button>` : ""), "confirmation");
 }
@@ -526,43 +544,99 @@ let activeNotificationCols = settings.notificationColumns && settings.notificati
 let formattedText = activeNotificationCols.map(c => targetGuest[c]).filter(Boolean).join(" — ") || targetGuest.Name || targetGuest.name || "Guest Profile";
 triggerStreamToastNotification(formattedText);
 refreshFrontDashboardCounters();
-showPopup("Checked-In Successfully", settings.confirmColumns.map(c => `<b>${c}:</b> ${masterlist[currentIndex][c] || ""}`).join("<br>") + `<hr><b>Status:</b> Checked<br><b>Time:</b> ${time}`, `<button onclick="afterCheckIn()" style="background:#10b981;color:white;">Close</button>`, "other");
+showPopup("Checked-In Successfully", settings.confirmColumns.map(c => `<b>${c}:</b> ${masterlist[currentIndex][c] || ""}`).join("<br>") + `<hr><b>Status:</b> Checked<br><b>Time:</b> ${time}`, `<button onclick="afterCheckIn()" style="background:#10b981;color:white;">Close</button>`, "success");
 }
 function openSettings(){
 const savedUrl = localStorage.getItem("connectedSheetUrl") || "", hexValue = settings.currentThemeColor || DEFAULT_THEME_COLOR, hasBgImg = !!localStorage.getItem("customThemePicture");
 const headers = Object.keys(masterlist[0]||{}).filter(x => x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time" && x !== "rowId");
 let hHtml = `<span class="settings-section-title">Tracking Mapping (UID)</span><div class="settings-input-group"><input type="text" id="operatorIdentityInput" value="${deviceId}" disabled style="background-color: #f1f5f9; cursor: not-allowed; font-weight: bold;"><button id="operatorUnlockBtn" onclick="unlockOperatorIdentityField()" style="background: #e11d48; color: white;"> 🔒  Unlock</button></div><span class="settings-section-title">Visual Branding Color Engine</span><div class="picker-container"><input type="color" id="themeHexPicker" value="${hexValue}" oninput="handlePickerChange(this.value)"><input type="text" id="themeHexText" value="${hexValue}" maxlength="7" oninput="handlePickerChange(this.value)"><button class="btn-bg-img-upload" onclick="triggerImageUpload()"> 🖼️  Wallpaper</button><button id="themeClearBgBtn" class="btn-bg-clear" onclick="clearImageBackground()" style="display: ${hasBgImg ? 'inline-flex' : 'none'};"> ❌  Clear</button></div><span class="settings-section-title">Database Integration Link</span><div class="settings-input-group"><input type="text" id="sheetUrlPopupInput" value="${savedUrl}" placeholder="Paste URL..."><button onclick="connectSheet()" class="primary" style="background:#4f46e5;">Link Sheet</button>${savedUrl ? `<button onclick="disconnectSheet()" style="background:#ef4444; color:white;">Unlink</button>` : ''}</div>`;
 if (!isLiveMode) hHtml += `<span class="settings-section-title">Local Document Import</span><button class="btn-upload-setting" onclick="openFile()">Upload Local File</button>`;
-hHtml += `<span class="settings-section-title">Presentation Rules Matrix</span><table class="settings-table"><thead><tr><th>Column Name</th><th class="text-center">Masterlist</th><th class="text-center">Suggestions</th><th class="text-center">Confirmation</th><th class="text-center">Notifications</th></tr></thead><tbody>`;
+hHtml += `<span class="settings-section-title">Presentation Rules Matrix Matrix Matrix Matrix</span><table class="settings-table"><thead><tr><th>Column Name</th><th class="text-center">Masterlist</th><th class="text-center">Suggestions</th><th class="text-center">Confirmation (Max 3)</th><th class="text-center">Notifications (Max 1)</th></tr></thead><tbody>`;
 if (headers.length === 0) { hHtml += `<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;"><i>No database columns loaded.</i></td></tr>`; } else {
 headers.forEach(h => { hHtml += `<tr><td><b>${h}</b></td><td class="text-center"><input type="checkbox" ${settings.showColumns.includes(h)?"checked":""} onchange="toggleGridSetting('showColumns', '${h}', this.checked)"></td><td class="text-center"><input type="checkbox" ${settings.suggestionColumns.includes(h)?"checked":""} onchange="toggleGridSetting('suggestionColumns', '${h}', this.checked)"></td><td class="text-center"><input type="checkbox" ${settings.confirmColumns.includes(h)?"checked":""} onchange="toggleGridSetting('confirmColumns', '${h}', this.checked)"></td><td class="text-center"><input type="checkbox" ${(settings.notificationColumns && settings.notificationColumns.includes(h))?"checked":""} onchange="toggleGridSetting('notificationColumns', '${h}', this.checked)"></td></tr>`; });
 }
 hHtml += `</tbody></table>`; showPopup("System Configuration", hHtml, "", "other");
 }
-function toggleGridSetting(type, field, isChecked) { if (!settings[type]) settings[type] = []; if (isChecked) { if (!settings[type].includes(field)) settings[type].push(field); } else { settings[type] = settings[type].filter(x => x !== field); } localStorage.setItem("settings", JSON.stringify(settings)); }
+function toggleGridSetting(type, field, isChecked) { 
+if (!settings[type]) settings[type] = []; 
+if (isChecked) {
+  if (type === 'notificationColumns') {
+    // Automatically switch notification column to the newly checked column instead of throwing an alert
+    settings[type] = [field];
+    localStorage.setItem("settings", JSON.stringify(settings)); 
+    openSettings();
+    return;
+  }
+  if (type === 'confirmColumns' && settings[type].length >= 3) {
+    alert(`The Confirmation layout configuration has a maximum hard boundary threshold limit of 3 active checked columns.`);
+    openSettings();
+    return;
+  }
+  if (!settings[type].includes(field)) settings[type].push(field); 
+} else { 
+  if (type === 'showColumns' && settings.showColumns.length <= 1) {
+    alert("At least 1 display column rule must remain selected inside your Masterlist layout view matrix configuration.");
+    openSettings();
+    return;
+  }
+  if (type === 'notificationColumns' && settings.notificationColumns.length <= 1) {
+    alert("At least 1 active column must remain explicitly selected for parsing live stream notifications blocks.");
+    openSettings();
+    return;
+  }
+  settings[type] = settings[type].filter(x => x !== field); 
+} 
+localStorage.setItem("settings", JSON.stringify(settings)); 
+}
 function viewMasterlist(){
 if (!masterlist.length) return showPopup("No Data","No uploaded records mapped.", "", "other");
-showPopup("Masterlist", `<div id="masterlistContainer"></div>`, "", "masterlist");
+showPopup("Masterlist Records", `<div id="masterlistContainer"></div>`, "", "masterlist");
 renderMasterlistRowsHTMLOnly();
 }
 function renderMasterlistRowsHTMLOnly() {
-const targetBox = document.getElementById("masterlistContainer"); if(!targetBox) return;
-const total = masterlist.length;
-let checked = 0;
-for(let i=0; i<total; i++) {
-  let s = masterlist[i].Status || masterlist[i].status;
-  if(s === "Checked" || s === "Checked-in") checked++;
-}
-const pending = total - checked;
-const rate = total > 0 ? Math.round((checked / total) * 100) : 0;
-let headers = settings.showColumns.length ? settings.showColumns : Object.keys(masterlist[0]).filter(x => x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time" && x !== "rowId");
-let headerRow = headers.map(h => `<th>${h}</th>`).join("") + `<th>Status</th>`;
-let rows = masterlist.map(item => {
-let isCh = item.Status === "Checked" || item.status === "Checked" || item.Status === "Checked-in";
-return `<tr>${headers.map(h => `<td>${item[h] || ""}</td>`).join("")}<td>${isCh ? `<span class="status-ok">Checked (${item.Time || item.time || ''})</span>` : `<span class="status-wait">Pending</span>`}</td></tr>`;
-}).join("");
-let buttons = isLiveMode ? `<div style="margin-top:15px;text-align:center;"><p style="font-size:12px; color:#64748b;">🔄 Auto-refreshing every 15 seconds...</p></div>` : `<div style="margin-top:15px;text-align:center;"><button onclick="download()">Download</button></div><div style="margin-top:10px;text-align:center;"><button onclick="resetAll()" style="background:#7c3aed;color:white;">Clear All Status</button></div><div style="margin-top:10px;text-align:center;"><button onclick="clearAllData()" style="background:#ef4444;color:white;">Clear All Uploaded Data</button></div>`;
-targetBox.innerHTML = `<div class="dashboard"><div class="card-stat"><div class="stat-title">Total</div><div class="stat-value">${total}</div></div><div class="card-stat green"><div class="stat-title">Checked</div><div class="stat-value">${checked}</div></div><div class="card-stat orange"><div class="stat-title">Pending</div><div class="stat-value">${pending}</div></div><div class="card-stat blue"><div class="stat-title">Attendance</div><div class="stat-value">${rate}%</div></div></div><table><tr>${headerRow}</tr>${rows}</table>${buttons}`;
+  const targetBox = document.getElementById("masterlistContainer"); if(!targetBox) return;
+  const total = masterlist.length;
+  let checked = 0;
+  for(let i=0; i<total; i++) {
+    let s = masterlist[i].Status || masterlist[i].status;
+    if(s === "Checked" || s === "Checked-in") checked++;
+  }
+  const pending = total - checked;
+  const rate = total > 0 ? Math.round((checked / total) * 100) : 0;
+  let headers = settings.showColumns.length ? settings.showColumns : Object.keys(masterlist[0]).filter(x => x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time" && x !== "rowId");
+  
+  let headerRow = headers.map(h => `<th>${h}</th>`).join("") + `<th>Status Mapping</th>`;
+  let rows = masterlist.map(item => {
+    let isCh = item.Status === "Checked" || item.status === "Checked" || item.Status === "Checked-in";
+    let statusPill = isCh 
+      ? `<span class="badge badge-success">✓ Checked</span><span class="badge-time">${item.Time || item.time || ''}</span>` 
+      : `<span class="badge badge-pending">○ Pending</span>`;
+    return `<tr>${headers.map(h => `<td>${item[h] || "—"}</td>`).join("")}<td>${statusPill}</td></tr>`;
+  }).join("");
+
+  let actionButtons = isLiveMode 
+    ? `<div style="margin-top:20px;text-align:center;"><p style="font-size:13px; color:#64748b; font-weight:500;">🔄 Realtime cloud connection active. Auto-syncing every 15s...</p></div>` 
+    : `<div class="masterlist-actions">
+        <button class="primary" onclick="download()">Export CSV Document</button>
+        <button onclick="resetAll()" style="background:#f4f4f5; border:1px solid #e4e4e7; color:#27272a;">Clear Checked Statuses</button>
+        <button onclick="clearAllData()" style="background:#fef2f2; border:1px solid #fee2e2; color:#ef4444;">Purge All Imported Lists</button>
+       </div>`;
+
+  targetBox.innerHTML = `
+    <div class="dashboard">
+      <div class="card-stat"><div class="stat-title">Total Records</div><div class="stat-value">${total}</div></div>
+      <div class="card-stat green"><div class="stat-title">Checked-In</div><div class="stat-value">${checked}</div></div>
+      <div class="card-stat orange"><div class="stat-title">Pending</div><div class="stat-value">${pending}</div></div>
+      <div class="card-stat blue"><div class="stat-title">Turnout Rate</div><div class="stat-value">${rate}%</div></div>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr>${headerRow}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    ${actionButtons}
+  `;
 }
 function download() {
 if (masterlist.length === 0) return;
@@ -596,6 +670,9 @@ document.addEventListener("keydown", e => {
   else if (currentPopupType === "confirmation") {
     if (e.key === "Backspace") { e.preventDefault(); cachedSuggestionsHTML ? goBackToSuggestions() : closePopup(); }
     else if (e.key === "Enter") { e.preventDefault(); const btn = actionsNode.querySelector("button"); if (btn) btn.click(); }
+  }
+  else if (currentPopupType === "success") {
+    if (e.key === "Enter" || e.key === "Backspace") { e.preventDefault(); afterCheckIn(); }
   }
   else { if (e.key === "Enter" || e.key === "Backspace") { if(document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "SELECT") return; const btn = actionsNode.querySelector("button"); if (btn) { e.preventDefault(); btn.click(); } else { closePopup(); } } }
   if (e.key === "Escape") closePopup();
