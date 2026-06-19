@@ -6,22 +6,99 @@
 <title>Guest Check-In</title>
 <style>
 * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-body { margin: 0; background: linear-gradient(135deg, #0f172a, #1e3a8a); color: white; min-height: 100vh; }
-.top-bar { position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 12px; }
-.top-bar button { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap; }
+
+/* THEME SCHEMES ENGINE - DRIVEN BY DYNAMIC CSS VARIABLES */
+:root {
+  --primary-color: #3b82f6;
+  --bg-gradient: linear-gradient(135deg, #0f172a, #1e3a8a);
+}
+
+body { 
+  margin: 0; 
+  min-height: 100vh; 
+  transition: background 0.4s ease, color 0.3s ease; 
+  background: var(--bg-gradient);
+  background-size: cover !important; 
+  background-position: center !important; 
+  background-repeat: no-repeat !important; 
+  background-attachment: fixed !important;
+}
+
+/* CONTRAST CONTROLLER UTILITIES */
+body.bg-dark-contrast { color: #ffffff; }
+body.bg-light-contrast { color: #0f172a; }
+
+/* FIXED TOP NAVIGATION BAR LAYOUT */
+.top-bar { 
+  position: absolute; 
+  top: 20px; 
+  left: 20px; 
+  right: 20px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  z-index: 10; 
+}
+.status-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.top-bar-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.top-bar button { padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap; font-size: 14px; font-weight: 500; }
 .btn-view { background: linear-gradient(135deg, #10b981, #047857); color: white; }
-.secondary { background: rgba(255,255,255,0.2); color: white; }
-.container { height: 100vh; display: flex; justify-content: center; align-items: center; }
-.card { background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); padding: 40px; border-radius: 20px; width: 380px; text-align: center; }
-input { width: 100%; padding: 14px; border-radius: 10px; border: none; margin-bottom: 10px; font-size: 15px; }
+
+/* Dynamic Top-bar & HUD controls */
+body.bg-dark-contrast .secondary { background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(5px); }
+body.bg-light-contrast .secondary { background: rgba(15, 23, 42, 0.12); color: #0f172a; backdrop-filter: blur(5px); font-weight: 500; }
+
+.container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; z-index: 2; }
+
+/* ADAPTIVE MAIN CARD */
+.card { 
+  backdrop-filter: blur(25px); 
+  -webkit-backdrop-filter: blur(25px); 
+  padding: 40px; 
+  border-radius: 20px; 
+  width: 380px; 
+  text-align: center; 
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+body.bg-dark-contrast .card {
+  background: rgba(15, 23, 42, 0.6); 
+  border: 1px solid rgba(255, 255, 255, 0.15); 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+body.bg-light-contrast .card {
+  background: rgba(255, 255, 255, 0.75); 
+  border: 1px solid rgba(15, 23, 42, 0.1); 
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+}
+
+input, select { width: 100%; padding: 14px; border-radius: 10px; border: none; margin-bottom: 10px; font-size: 15px; }
+body.bg-dark-contrast input { background: white; color: black; }
+body.bg-light-contrast input { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
+
+select { background: white; color: black; cursor: pointer; }
 button { width: 100%; padding: 10px; border-radius: 10px; border: none; margin-top: 5px; cursor: pointer; }
-.primary { background: #3b82f6; color: white; }
-.popup { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; }
+.primary { background: var(--primary-color); color: white; }
+body.bg-light-contrast .primary { filter: brightness(0.85); }
+
+.popup { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(4px); }
 .popup-content { background: white; color: black; padding: 25px; border-radius: 12px; width: 90%; max-width: 900px; max-height: 85vh; overflow: auto; }
 .dashboard { display: flex; gap: 10px; margin-bottom: 15px; }
 .card-stat { flex: 1; background: #f1f5f9; padding: 10px; border-radius: 10px; text-align: center; }
-.footer { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 12px; color: rgba(255,255,255,0.7); letter-spacing: 0.5px; }
-.footer b { color: #3b82f6; }
+
+.footer { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 12px; letter-spacing: 0.5px; z-index: 2; transition: color 0.3s; }
+body.bg-dark-contrast .footer { color: rgba(255,255,255,0.7); text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+body.bg-light-contrast .footer { color: rgba(15, 23, 42, 0.8); text-shadow: none; }
+.footer b { color: var(--primary-color); filter: brightness(1.2); }
+body.bg-light-contrast .footer b { filter: brightness(0.8); }
+
 .card-stat.green { background: #d1fae5; }
 .card-stat.orange { background: #fde68a; }
 .stat-title { font-size: 12px; color: #475569; }
@@ -30,14 +107,40 @@ table { width: 100%; border-collapse: collapse; }
 td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
 .status-ok { color: green; }
 .status-wait { color: orange; }
-.simple-status { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
-.status-local-dot { color: #94a3b8; }
+
+/* HUD STATUS SYSTEM */
+.simple-status { 
+  font-size: 13px; 
+  font-weight: 600; 
+  letter-spacing: 0.5px; 
+  text-transform: uppercase; 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 8px; 
+  white-space: nowrap;
+}
+.device-badge {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+body.bg-dark-contrast .device-badge { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+body.bg-light-contrast .device-badge { background: rgba(15,23,42,0.08); color: #334155; }
+
+body.bg-dark-contrast .simple-status { text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.status-local-dot { color: #cbd5e1; }
+body.bg-light-contrast .status-local-dot { color: #475569; }
 .status-live-dot { color: #10b981; }
+
 .settings-input-group { display: flex; gap: 8px; margin-top: 10px; margin-bottom: 15px; }
-.settings-input-group input { margin: 0; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
+.settings-input-group input, .settings-input-group select { margin: 0; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
 .settings-input-group button { width: auto; margin: 0; padding: 10px 16px; white-space: nowrap; }
-.settings-section-title { display: block; font-size: 15px; font-weight: 600; margin-top: 15px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; }
-.btn-upload-setting { background: #4f46e5; color: white; width: auto; padding: 8px 16px; display: inline-block; margin-bottom: 15px; }
+.settings-section-title { display: block; font-size: 15px; font-weight: 600; margin-top: 15px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; color: #1e293b; }
+.btn-upload-setting { background: #4f46e5; color: white; width: auto; padding: 8px 16px; display: inline-block; margin-bottom: 15px; border-radius: 8px; }
 .settings-table { width: 100%; margin-top: 10px; border-collapse: collapse; }
 .settings-table th, .settings-table td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; }
 .settings-table th { background-color: #f8fafc; font-weight: 600; font-size: 13px; color: #334155; }
@@ -45,27 +148,43 @@ td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
 .text-center { text-align: center; }
 
 /* INSTRUCTIONS HUD */
-.mini-instructions { background: rgba(255, 255, 255, 0.12); font-size: 11px; padding: 8px 12px; border-radius: 8px; text-align: left; margin-bottom: 15px; color: #cbd5e1; line-height: 1.5; }
-.mini-instructions span { color: #60a5fa; font-weight: bold; font-family: monospace; }
+.mini-instructions { font-size: 11px; padding: 8px 12px; border-radius: 8px; text-align: left; margin-bottom: 15px; line-height: 1.5; transition: background 0.3s, color 0.3s; }
+body.bg-dark-contrast .mini-instructions { background: rgba(255, 255, 255, 0.1); color: #cbd5e1; }
+body.bg-light-contrast .mini-instructions { background: rgba(15, 23, 42, 0.06); color: #475569; }
+.mini-instructions span { color: var(--primary-color); filter: brightness(1.2); font-weight: bold; font-family: monospace; }
+body.bg-light-contrast .mini-instructions span { filter: brightness(0.8); }
 
 /* SUGGESTION LIST SYSTEM */
 .suggestion-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
 .suggestion-card { width: 100%; text-align: left; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.15s; margin-top: 0; outline: none; }
-.suggestion-card:hover, .suggestion-card.focused { background: #eff6ff; border-color: #3b82f6; transform: translateY(-1px); }
+.suggestion-card:hover, .suggestion-card.focused { background: #eff6ff; border-color: var(--primary-color); transform: translateY(-1px); }
 .sug-info { font-size: 15px; color: #1e293b; font-weight: 500; line-height: 1.4; }
 .sug-action-tag { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; color: #2563eb; text-transform: uppercase; }
 .sug-checked-tag { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px; color: #10b981; text-transform: uppercase; }
 
-.modal-instruction-hint { font-size: 12px; color: #64748b; margin-bottom: 15px; background: #f8fafc; padding: 8px; border-radius: 6px; border-left: 3px solid #3b82f6; }
+.modal-instruction-hint { font-size: 12px; color: #64748b; margin-bottom: 15px; background: #f8fafc; padding: 8px; border-radius: 6px; border-left: 3px solid var(--primary-color); }
 .modal-instruction-hint span { font-weight: bold; font-family: monospace; color: #1e3a8a; }
+
+/* ONE ROW THEME PICKER ITEMS */
+.picker-container { display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin-bottom: 15px; width: 100%; }
+.picker-container input[type="color"] { width: 44px; height: 38px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; margin: 0; flex-shrink: 0; }
+.picker-container input[type="text"] { width: 100px; margin: 0; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; font-family: monospace; text-transform: uppercase; flex-shrink: 0; height: 38px; }
+.btn-bg-img-upload { background: #475569; color: white; border: none; padding: 0 14px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; height: 38px; display: inline-flex; align-items: center; white-space: nowrap; }
+.btn-bg-clear { background: #ef4444; color: white; border: none; padding: 0 14px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; height: 38px; display: inline-flex; align-items: center; white-space: nowrap; }
 </style>
 </head>
-<body>
+<body class="bg-dark-contrast">
 
 <div class="top-bar">
-  <span id="simpleStatusText" class="simple-status status-local-dot">● Local Mode</span>
-  <button onclick="openSettings()" class="secondary">Settings</button>
-  <button class="btn-view" onclick="viewMasterlist()">Masterlist</button>
+  <div class="status-group">
+    <span id="simpleStatusText" class="simple-status status-local-dot">● Local Mode</span>
+    <span id="deviceStatusIdentity" class="device-badge">💻 Device Setup...</span>
+  </div>
+  
+  <div class="top-bar-buttons">
+    <button onclick="openSettings()" class="secondary">Settings</button>
+    <button class="btn-view" onclick="viewMasterlist()">Masterlist</button>
+  </div>
 </div>
 
 <div class="container">
@@ -86,7 +205,8 @@ td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
   </div>
 </div>
 
-<input type="file" id="csvFile" hidden onchange="loadCSV(event)">
+<input type="file" id="csvFile" hidden accept=".csv, .xlsx, .xls" onchange="loadCSV(event)">
+<input type="file" id="bgImageFile" hidden accept="image/*" onchange="loadCustomBackgroundImage(event)">
 
 <div id="popup" class="popup" onclick="outside(event)">
   <div class="popup-content">
@@ -101,9 +221,11 @@ td, th { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbz4gaqDwu-CKdhSTfMJG7K9kE71LFGJGax1r1bv4-zMr7F5oY0WYePMBH46eGWFl53LFA/exec"; 
 
+const DEFAULT_THEME_COLOR = "#3b82f6";
+
 let masterlist = JSON.parse(localStorage.getItem("masterlist")) || [];
-let settings = JSON.parse(localStorage.getItem("settings")) || { showColumns: [], confirmColumns: [], suggestionColumns: [] };
-let current = null, currentIndex = null, isLiveMode = false;
+let settings = JSON.parse(localStorage.getItem("settings")) || { showColumns: [], confirmColumns: [], suggestionColumns: [], currentThemeColor: DEFAULT_THEME_COLOR };
+let current = null, currentIndex = null, isLiveMode = false, deviceId = "";
 
 let currentPopupType = ""; 
 let cachedSuggestionsHTML = ""; 
@@ -115,22 +237,188 @@ const contentNode = document.getElementById("content");
 const actionsNode = document.getElementById("actions");
 const inputNode = document.getElementById("nameInput");
 const statusNode = document.getElementById("simpleStatusText");
+const deviceBadgeNode = document.getElementById("deviceStatusIdentity");
 
 window.addEventListener("DOMContentLoaded", () => {
+  setupDeviceIdentity();
+  
   const savedSheet = localStorage.getItem("connectedSheetUrl");
   savedSheet ? fetchLiveMasterlist(savedSheet) : updateModeUI(false);
+  
+  if (!settings.currentThemeColor) settings.currentThemeColor = DEFAULT_THEME_COLOR;
+  
+  const customImg = localStorage.getItem("customThemePicture");
+  if (customImg) {
+    applyImageBackground(customImg);
+  } else {
+    applyColorEngine(settings.currentThemeColor);
+  }
   inputNode.focus();
 });
 
+function setupDeviceIdentity() {
+  let savedId = localStorage.getItem("operatorIdentityName");
+  if (!savedId) {
+    savedId = "Device-" + Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem("operatorIdentityName", savedId);
+  }
+  deviceId = savedId;
+  deviceBadgeNode.innerHTML = `💻 ${deviceId}`;
+}
+
+function updateDeviceIdentity(newName) {
+  let val = newName.trim();
+  if(!val) return;
+  localStorage.setItem("operatorIdentityName", val);
+  deviceId = val;
+  deviceBadgeNode.innerHTML = `💻 ${deviceId}`;
+}
+
+// Protected authorization trigger to change operator identity field
+function unlockOperatorIdentityField() {
+  const passwordCheck = prompt("Enter admin credentials to modify the tracking UID:");
+  if (passwordCheck === "Broadimagi") {
+    const fieldNode = document.getElementById("operatorIdentityInput");
+    if(fieldNode) {
+      fieldNode.removeAttribute("disabled");
+      fieldNode.style.backgroundColor = "white";
+      fieldNode.focus();
+    }
+    const unlockBtn = document.getElementById("operatorUnlockBtn");
+    if(unlockBtn) unlockBtn.style.display = "none";
+  } else {
+    alert("Unauthorized Action: Invalid security credentials entered.");
+  }
+}
+
+function applyColorEngine(hex) {
+  if (!hex || !hex.startsWith("#")) hex = DEFAULT_THEME_COLOR;
+  settings.currentThemeColor = hex;
+  localStorage.setItem("settings", JSON.stringify(settings));
+
+  document.body.style.background = "";
+
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+
+  let darkR = Math.round(r * 0.15);
+  let darkG = Math.round(g * 0.15);
+  let darkB = Math.round(b * 0.15);
+  
+  let deepBaseColor = `rgb(${darkR + 8}, ${darkG + 10}, ${darkB + 18})`;
+  let primarySpectrum = `rgb(${r}, ${g}, ${b})`;
+
+  document.documentElement.style.setProperty('--primary-color', primarySpectrum);
+  document.documentElement.style.setProperty('--bg-gradient', `linear-gradient(135deg, ${deepBaseColor}, rgb(${Math.round(r*0.6)}, ${Math.round(g*0.6)}, ${Math.round(b*0.6)}))`);
+
+  let luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+  document.body.classList.remove("bg-dark-contrast", "bg-light-contrast");
+  
+  if (luminance > 165) { 
+    document.body.classList.add("bg-light-contrast");
+  } else {
+    document.body.classList.add("bg-dark-contrast");
+  }
+}
+
+function applyImageBackground(dataUrl) {
+  document.body.style.background = `url(${dataUrl})`;
+  analyzeBackgroundBrightness(dataUrl);
+}
+
+function analyzeBackgroundBrightness(dataUrl) {
+  const img = new Image();
+  img.src = dataUrl;
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 40; 
+    canvas.height = 40;
+    ctx.drawImage(img, 0, 0, 40, 40);
+    
+    try {
+      const imgData = ctx.getImageData(0, 0, 40, 40).data;
+      let totalLuminance = 0;
+      
+      for (let i = 0; i < imgData.length; i += 4) {
+        totalLuminance += (0.299 * imgData[i] + 0.587 * imgData[i+1] + 0.114 * imgData[i+2]);
+      }
+      
+      const averageLuminance = totalLuminance / (canvas.width * canvas.height);
+      document.body.classList.remove("bg-dark-contrast", "bg-light-contrast");
+      
+      if (averageLuminance > 140) { 
+        document.body.classList.add("bg-light-contrast");
+      } else {
+        document.body.classList.add("bg-dark-contrast");
+      }
+    } catch(err) {
+      document.body.classList.add("bg-dark-contrast");
+    }
+  };
+}
+
+function handlePickerChange(val) {
+  if (val.length === 7 && val.startsWith("#")) {
+    localStorage.removeItem("customThemePicture");
+    applyColorEngine(val);
+    const textInp = document.getElementById("themeHexText");
+    const clrInp = document.getElementById("themeHexPicker");
+    if(textInp) textInp.value = val;
+    if(clrInp) clrInp.value = val;
+  }
+}
+
+function triggerImageUpload() {
+  document.getElementById("bgImageFile").click();
+}
+
+function clearImageBackground() {
+  localStorage.removeItem("customThemePicture");
+  applyColorEngine(settings.currentThemeColor || DEFAULT_THEME_COLOR);
+  const clearBtn = document.getElementById("themeClearBgBtn");
+  if(clearBtn) clearBtn.style.display = "none";
+}
+
+function loadCustomBackgroundImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      localStorage.setItem("customThemePicture", ev.target.result);
+      applyImageBackground(ev.target.result);
+      const clearBtn = document.getElementById("themeClearBgBtn");
+      if(clearBtn) clearBtn.style.display = "inline-flex";
+    } catch(error) {
+      alert("Image file size is too large for local cache memory storage. Please use a compressed image.");
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
 function updateModeUI(live) {
   isLiveMode = live;
-  statusNode.innerText = live ? "● Live Mode" : "● Local Mode";
+  statusNode.innerHTML = live ? "● Live Mode" : "● Local Mode";
   statusNode.className = live ? "simple-status status-live-dot" : "simple-status status-local-dot";
 }
 
 function connectSheet() {
   const url = document.getElementById("sheetUrlPopupInput").value.trim();
   if(!url) return disconnectSheet(true);
+  
+  const hasLocalCheckins = masterlist.some(x => x.Status === "Checked" || x.Status === "Checked-in");
+  
+  if(!isLiveMode && hasLocalCheckins) {
+    if(confirm("⚠️ SECURITY VERIFICATION WARNING:\nYou have unsaved check-in data stored locally! Connecting to a live sheet now will reset this space.\n\nClick 'OK' to automatically download a backup spreadsheet file of your current local attendance data before connecting.")) {
+      download(); 
+    } else {
+      return; 
+    }
+  }
+  
   fetchLiveMasterlist(url);
 }
 
@@ -159,7 +447,7 @@ async function fetchLiveMasterlist(targetUrl) {
     masterlist = data;
     updateModeUI(true);
     if (masterlist.length > 0 && !settings.showColumns.length) {
-      const headers = Object.keys(masterlist[0]).filter(x => x !== "rowId" && x !== "status" && x !== "time");
+      const headers = Object.keys(masterlist[0]).filter(x => x !== "rowId" && x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time");
       settings.showColumns = [...headers]; settings.confirmColumns = [...headers]; settings.suggestionColumns = [...headers];
       localStorage.setItem("settings", JSON.stringify(settings));
     }
@@ -173,6 +461,15 @@ async function fetchLiveMasterlist(targetUrl) {
 function openFile(){ document.getElementById("csvFile").click(); }
 
 function loadCSV(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const fileName = file.name.toLowerCase();
+  if (!fileName.endsWith('.csv') && !fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+    showPopup("Invalid Format", "Security Block: Only Excel (.xlsx, .xls) and CSV (.csv) records are accepted.", "", "other");
+    return;
+  }
+
   const reader = new FileReader();
   reader.onload = ev => {
     const rows = ev.target.result.split("\n");
@@ -182,7 +479,7 @@ function loadCSV(e) {
       if (!r.trim()) return;
       let obj = {};
       r.split(",").forEach((v, i) => obj[headers[i]] = v.trim());
-      obj.status = ""; obj.time = "";
+      obj.Status = ""; obj.Time = ""; obj.UID = "";
       if (!masterlist.some(x => headers.every(h => x[h] === obj[h]))) {
         masterlist.push(obj);
         added++;
@@ -195,29 +492,46 @@ function loadCSV(e) {
     localStorage.setItem("settings", JSON.stringify(settings));
     showPopup("Upload Complete", `Added: ${added}`, "", "other");
   };
-  reader.readAsText(e.target.files[0]);
+  reader.readAsText(file);
 }
 
 function checkName(){
   const val = inputNode.value.toLowerCase().trim();
   if(!val) return;
   
-  // FIXED KEYWORD ENGINE: Finds records matching query criteria across properties
-  const sug = masterlist.filter(i => Object.entries(i).some(([k,v]) => k !== "rowId" && k !== "status" && k !== "time" && String(v).toLowerCase().includes(val))).slice(0,5);
-  if(!sug.length) return showPopup("Not Found","No match found.", "", "other");
+  let activeSearchCols = settings.suggestionColumns && settings.suggestionColumns.length > 0 
+    ? settings.suggestionColumns 
+    : Object.keys(masterlist[0] || {}).filter(x => x !== "rowId" && x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time");
+
+  const sug = masterlist.filter(i => {
+    const isCheckedIn = i.Status === "Checked" || i.Status === "Checked-in" || i.status === "Checked";
+    if (isCheckedIn) return false; 
+    
+    return activeSearchCols.some(colName => {
+      return i[colName] && String(i[colName]).toLowerCase().includes(val);
+    });
+  });
+
+  if(!sug.length) return showPopup("Not Found","No pending match found for configured columns.", "", "other");
   
+  sug.sort((a, b) => {
+    let aExact = activeSearchCols.some(c => String(a[c]).toLowerCase() === val) ? 1 : 0;
+    let bExact = activeSearchCols.some(c => String(b[c]).toLowerCase() === val) ? 1 : 0;
+    return bExact - aExact;
+  });
+
+  const displayLimit = sug.slice(0, 5);
   currentFocusIdx = 0; 
+  
   let html = `
     <div class="modal-instruction-hint">⌨️ Suggestions Hotkeys: Use <span>↑</span> / <span>↓</span> to navigate, <span>Enter</span> to select, <span>Backspace</span> to cancel.</div>
-    <div class="suggestion-container">` + sug.map((i, index) => {
+    <div class="suggestion-container">` + displayLimit.map((i, index) => {
     let idx = masterlist.indexOf(i);
     let label = settings.suggestionColumns.map(c => i[c]).filter(Boolean).join(" — ");
-    let isChecked = i.status === "Checked" || i.status === "Checked-in";
-    let actionLabel = isChecked ? `<span class="sug-checked-tag">✓ Already Checked-In</span>` : `<span class="sug-action-tag">→ Tap to Verify & Check-In</span>`;
     return `
       <button class="suggestion-card ${index === 0 ? 'focused' : ''}" data-idx="${idx}" onclick="selectSuggestion(${idx}, true)">
         <div class="sug-info">${label || "Guest Information Profile"}</div>
-        ${actionLabel}
+        <span class="sug-action-tag">→ Tap to Verify & Check-In</span>
       </button>`;
   }).join("") + `</div>`;
   
@@ -234,11 +548,12 @@ function selectSuggestion(index, triggeredFromSuggestionsList = true){
     settings.confirmColumns.map(c => `<b>${c}:</b> ${current[c] || ""}`).join("<br>") + 
     `</div>`;
   
-  if(current.status === "Checked" || current.status === "Checked-in"){
+  let isChecked = current.Status === "Checked" || current.Status === "Checked-in" || current.status === "Checked";
+  if(isChecked){
     let backBtn = triggeredFromSuggestionsList ? 
       `<button onclick="goBackToSuggestions()" style="background:#64748b;color:white;">Go Back (Backspace)</button>` : 
       `<button onclick="closePopup()" style="background:#64748b;color:white;">Close</button>`;
-    return showPopup("<span style='color:#ef4444;'>❌ Action Blocked</span>", `<p style="color:#ef4444; font-weight:600; margin-bottom:15px;">This guest has already checked in!</p><b>Logged Time:</b> ${current.time || 'No timestamp recorded.'}<br><br>${content}`, backBtn, "confirmation");
+    return showPopup("<span style='color:#ef4444;'>❌ Action Blocked</span>", `<p style="color:#ef4444; font-weight:600; margin-bottom:15px;">This guest has already checked in!</p><b>Logged Time:</b> ${current.Time || current.time || 'No timestamp recorded.'}<br><br>${content}`, backBtn, "confirmation");
   }
   
   let actionsHTML = `<button class="primary" onclick="checkIn()" style="background:#10b981; font-weight:600; padding:12px;">Confirm Check-In (Enter)</button>`;
@@ -268,7 +583,13 @@ async function checkIn(){
     try {
       const response = await fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify({ sheetId: localStorage.getItem("connectedSheetUrl"), rowId: targetGuest.rowId, status: "Checked", time: time })
+        body: JSON.stringify({ 
+          sheetId: localStorage.getItem("connectedSheetUrl"), 
+          rowId: targetGuest.rowId, 
+          status: "Checked", 
+          time: time,
+          operator: deviceId
+        })
       });
       const result = await response.json();
       if(!result.success) return showPopup("Sync Refused", "Error: " + result.error, "", "other");
@@ -276,8 +597,8 @@ async function checkIn(){
       return showPopup("Network Error", "Sync failed.", "", "other");
     }
   }
-  masterlist[currentIndex].status = "Checked";
-  masterlist[currentIndex].time = time;
+  masterlist[currentIndex].Status = "Checked";
+  masterlist[currentIndex].Time = time;
   if (!isLiveMode) localStorage.setItem("masterlist", JSON.stringify(masterlist));
   let content = settings.confirmColumns.map(c => `<b>${c}:</b> ${masterlist[currentIndex][c] || ""}`).join("<br>");
   showPopup("Checked-In Successfully", `${content}<hr><b>Status:</b> Checked<br><b>Time:</b> ${time}`, `<button onclick="afterCheckIn()" style="background:#10b981;color:white;">Close (Enter)</button>`, "other");
@@ -285,8 +606,26 @@ async function checkIn(){
 
 function openSettings(){
   const savedUrl = localStorage.getItem("connectedSheetUrl") || "";
-  const headers = Object.keys(masterlist[0]||{}).filter(x => x !== "status" && x !== "time" && x !== "rowId");
+  const hexValue = settings.currentThemeColor || DEFAULT_THEME_COLOR;
+  const hasBgImg = !!localStorage.getItem("customThemePicture");
+  const headers = Object.keys(masterlist[0]||{}).filter(x => x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time" && x !== "rowId");
+  
+  // Implemented protection layer: Input locked with disabled flag + authentication button
   let hHtml = `
+    <span class="settings-section-title">Tracking Identity Mapping (UID)</span>
+    <div class="settings-input-group">
+      <input type="text" id="operatorIdentityInput" value="${deviceId}" disabled style="background-color: #f1f5f9; cursor: not-allowed; font-weight: bold;" placeholder="Enter operator/station label..." onchange="updateDeviceIdentity(this.value)">
+      <button id="operatorUnlockBtn" onclick="unlockOperatorIdentityField()" style="background: #e11d48; color: white;">🔒 Unlock Field</button>
+    </div>
+
+    <span class="settings-section-title">Company Profile Theme & Visual Branding</span>
+    <div class="picker-container">
+      <input type="color" id="themeHexPicker" value="${hexValue}" oninput="handlePickerChange(this.value)">
+      <input type="text" id="themeHexText" value="${hexValue}" maxlength="7" oninput="handlePickerChange(this.value)">
+      <button class="btn-bg-img-upload" onclick="triggerImageUpload()">Wallpaper Image</button>
+      <button id="themeClearBgBtn" class="btn-bg-clear" onclick="clearImageBackground()" style="display: ${hasBgImg ? 'inline-flex' : 'none'};">❌ Clear</button>
+    </div>
+
     <span class="settings-section-title">Database Integration Link</span>
     <div class="settings-input-group">
       <input type="text" id="sheetUrlPopupInput" value="${savedUrl}" placeholder="Paste Google Sheet URL here...">
@@ -294,13 +633,32 @@ function openSettings(){
       ${savedUrl ? `<button onclick="disconnectSheet()" style="background:#ef4444; color:white;">Unlink</button>` : ''}
     </div>
   `;
-  if (!isLiveMode) hHtml += `<span class="settings-section-title">Local CSV Import</span><button class="btn-upload-setting" onclick="openFile()">Choose and Upload File</button>`;
-  hHtml += `<span class="settings-section-title">Display & Presentation Rules Matrix</span><table class="settings-table"><thead><tr><th>Column Field Name</th><th class="text-center" style="width: 120px;">Masterlist View</th><th class="text-center" style="width: 120px;">Confirmation</th><th class="text-center" style="width: 120px;">Suggestions</th></tr></thead><tbody>`;
+  
+  if (!isLiveMode) hHtml += `<span class="settings-section-title">Local Database Document Import</span><button class="btn-upload-setting" onclick="openFile()">Upload Local File (.csv, .xlsx)</button>`;
+  
+  hHtml += `
+    <span class="settings-section-title">Display & Presentation Rules Matrix</span>
+    <table class="settings-table">
+      <thead>
+        <tr>
+          <th>Column Field Name</th>
+          <th class="text-center" style="width: 120px;">Masterlist View</th>
+          <th class="text-center" style="width: 120px;">Suggestions</th>
+          <th class="text-center" style="width: 120px;">Confirmation</th>
+        </tr>
+      </thead>
+      <tbody>`;
+      
   if (headers.length === 0) {
     hHtml += `<tr><td colspan="4" style="text-align: center; color: #64748b; padding: 20px;"><i>No database columns loaded. Upload a CSV or Link a Sheet first.</i></td></tr>`;
   } else {
     headers.forEach(h => {
-      hHtml += `<tr><td><b>${h}</b></td><td class="text-center"><input type="checkbox" ${settings.showColumns.includes(h)?"checked":""} onchange="toggleGridSetting('showColumns', '${h}', this.checked)"></td><td class="text-center"><input type="checkbox" ${settings.confirmColumns.includes(h)?"checked":""} onchange="toggleGridSetting('confirmColumns', '${h}', this.checked)"></td><td class="text-center"><input type="checkbox" ${settings.suggestionColumns.includes(h)?"checked":""} onchange="toggleGridSetting('suggestionColumns', '${h}', this.checked)"></td></tr>`;
+      hHtml += `<tr>
+        <td><b>${h}</b></td>
+        <td class="text-center"><input type="checkbox" ${settings.showColumns.includes(h)?"checked":""} onchange="toggleGridSetting('showColumns', '${h}', this.checked)"></td>
+        <td class="text-center"><input type="checkbox" ${settings.suggestionColumns.includes(h)?"checked":""} onchange="toggleGridSetting('suggestionColumns', '${h}', this.checked)"></td>
+        <td class="text-center"><input type="checkbox" ${settings.confirmColumns.includes(h)?"checked":""} onchange="toggleGridSetting('confirmColumns', '${h}', this.checked)"></td>
+      </tr>`;
     });
   }
   hHtml += `</tbody></table>`;
@@ -318,29 +676,30 @@ function toggleGridSetting(type, field, isChecked) {
 
 function viewMasterlist(){
   if (!masterlist.length) return showPopup("No Data","No uploaded records mapped.", "", "other");
-  const total = masterlist.length, checked = masterlist.filter(x => x.status === "Checked").length, pending = total - checked;
-  let headers = settings.showColumns.length ? settings.showColumns : Object.keys(masterlist[0]).filter(x => x !== "status" && x !== "time" && x !== "rowId");
+  const total = masterlist.length, checked = masterlist.filter(x => x.Status === "Checked" || x.status === "Checked").length, pending = total - checked;
+  let headers = settings.showColumns.length ? settings.showColumns : Object.keys(masterlist[0]).filter(x => x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time" && x !== "rowId");
   let headerRow = headers.map(h => `<th>${h}</th>`).join("") + `<th>Status</th>`;
   let rows = masterlist.map(item => {
-    return `<tr>${headers.map(h => `<td>${item[h] || ""}</td>`).join("")}<td>${item.status === "Checked" ? `<span class="status-ok">Checked (${item.time})</span>` : `<span class="status-wait">Pending</span>`}</td></tr>`;
+    let isCh = item.Status === "Checked" || item.status === "Checked";
+    return `<tr>${headers.map(h => `<td>${item[h] || ""}</td>`).join("")}<td>${isCh ? `<span class="status-ok">Checked (${item.Time || item.time})</span>` : `<span class="status-wait">Pending</span>`}</td></tr>`;
   }).join("");
   let buttons = isLiveMode ? `<div style="margin-top:15px;text-align:center;"><button onclick="fetchLiveMasterlist(localStorage.getItem('connectedSheetUrl'))">Refresh Live Sync Records</button></div>` : `<div style="margin-top:15px;text-align:center;"><button onclick="download()">Download</button></div><div style="margin-top:10px;text-align:center;"><button onclick="resetAll()" style="background:#7c3aed;color:white;">Clear All Status</button></div><div style="margin-top:10px;text-align:center;"><button onclick="clearAllData()" style="background:#ef4444;color:white;">Clear All Uploaded Data</button></div>`;
   showPopup("Masterlist", `<div class="dashboard"><div class="card-stat"><div class="stat-title">Total</div><div class="stat-value">${total}</div></div><div class="card-stat green"><div class="stat-title">Checked</div><div class="stat-value">${checked}</div></div><div class="card-stat orange"><div class="stat-title">Pending</div><div class="stat-value">${pending}</div></div></div><table><tr>${headerRow}</tr>${rows}</table>${buttons}`, "", "other");
 }
 
 function download() {
-  if(isLiveMode) return;
+  if (masterlist.length === 0) return;
   let csv = Object.keys(masterlist[0]).join(",") + "\n";
   masterlist.forEach(item => { csv += Object.values(item).join(",") + "\n"; });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv]));
-  a.download = "attendance.csv";
+  a.download = "local_attendance_backup.csv";
   a.click();
 }
 
 function resetAll() {
   if(isLiveMode || prompt("Enter admin password:") !== "Broadimagi") return showPopup("Denied", "Identity mapping error.", "", "other");
-  masterlist.forEach(item => { item.status = ""; item.time = ""; });
+  masterlist.forEach(item => { item.Status = ""; item.Time = ""; item.UID = ""; if(item.status)item.status=""; if(item.time)item.time=""; });
   localStorage.setItem("masterlist", JSON.stringify(masterlist));
   showPopup("Reset Complete", "All statuses cleared.", "", "other");
 }
@@ -385,12 +744,10 @@ function closePopup(){
 function outside(e){ if(e.target.id === "popup") closePopup(); }
 function resetForm(){ inputNode.value = ""; inputNode.focus(); }
 
-/* GLOBAL HOTKEY ENGINE ISOLATED TO SPECIFIC MODAL CONTEXTS */
 document.addEventListener("keydown", e => {
   const isPopupOpen = popupNode.style.display === "flex";
-  if (!isPopupOpen) return; // Keep standard inputs completely unaltered out of modals
+  if (!isPopupOpen) return; 
 
-  // 1. SUGGESTIONS LIST MODAL STATE
   if (currentPopupType === "suggestions") {
     const suggestionCards = document.querySelectorAll(".suggestion-card");
     
@@ -414,7 +771,6 @@ document.addEventListener("keydown", e => {
       if (activeCard) activeCard.click();
     }
   } 
-  // 2. CONFIRMATION VERIFICATION MODAL STATE
   else if (currentPopupType === "confirmation") {
     if (e.key === "Backspace") {
       e.preventDefault();
@@ -426,9 +782,9 @@ document.addEventListener("keydown", e => {
       if (primaryActionBtn) primaryActionBtn.click();
     }
   } 
-  // 3. FALLBACK MODAL ALERTS
   else {
     if (e.key === "Enter" || e.key === "Backspace") {
+      if(document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "SELECT") return;
       const actionBtn = actionsNode.querySelector("button");
       if (actionBtn) { e.preventDefault(); actionBtn.click(); } else { closePopup(); }
     }
