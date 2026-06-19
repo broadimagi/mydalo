@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>myGuest</title>
-<link rel="icon" type="image/png" href="broadimagi.png">
+<link rel="icon" type="image/png" href="broadimagi.png?v=2">
 <style>
 * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 :root {
@@ -47,8 +47,6 @@ body.bg-light-contrast { color: #0f172a; }
 .btn-view { background: linear-gradient(135deg, #10b981, #047857); color: white; }
 body.bg-dark-contrast .secondary { background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(5px); }
 body.bg-light-contrast .secondary { background: rgba(15, 23, 42, 0.12); color: #0f172a; backdrop-filter: blur(5px); font-weight: 500; }
-
-/* CENTRAL STATION ALIGNMENT WRAPPER */
 .center-stack-wrapper {
   display: flex;
   flex-direction: column;
@@ -57,8 +55,6 @@ body.bg-light-contrast .secondary { background: rgba(15, 23, 42, 0.12); color: #
   z-index: 2;
 }
 .container { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; z-index: 2; }
-
-/* REUSABLE MINIMALIST GLASS CARD CLASS */
 .card, .front-stat {
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
@@ -75,16 +71,13 @@ body.bg-light-contrast .card, body.bg-light-contrast .front-stat {
   border: 1px solid rgba(15, 23, 42, 0.1);
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
 }
-
 .card {
   padding: 35px 40px;
   width: 100%;
   text-align: center;
 }
-
-/* MATCHING MINIMALIST FRONT DASHBOARD BADGES */
 .front-dashboard { 
-  display: none; /* Controlled dynamically by JavaScript */
+  display: none;
   gap: 10px; 
   width: 100%;
 }
@@ -93,25 +86,18 @@ body.bg-light-contrast .card, body.bg-light-contrast .front-stat {
   padding: 14px 8px; 
   text-align: center; 
 }
-
-/* MINIMAL TEXT HIGHLIGHT ENGINE */
 .front-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
 .front-value { font-size: 22px; font-weight: 800; }
-
 body.bg-dark-contrast .front-title { opacity: 0.75; color: #ffffff; }
 body.bg-light-contrast .front-title { opacity: 0.8; color: #475569; }
-
-/* Tonal accents matching your text states */
 body.bg-dark-contrast .front-stat.green .front-value { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.2); }
 body.bg-dark-contrast .front-stat.orange .front-value { color: #fbbf24; text-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
 body.bg-dark-contrast .front-stat.blue .front-value { color: #60a5fa; text-shadow: 0 0 10px rgba(96, 165, 250, 0.2); }
 body.bg-dark-contrast .front-stat .front-value { color: #ffffff; }
-
 body.bg-light-contrast .front-stat.green .front-value { color: #047857; }
 body.bg-light-contrast .front-stat.orange .front-value { color: #b45309; }
 body.bg-light-contrast .front-stat.blue .front-value { color: #1d4ed8; }
 body.bg-light-contrast .front-stat .front-value { color: #0f172a; }
-
 input, select { width: 100%; padding: 14px; border-radius: 10px; border: none; margin-bottom: 10px; font-size: 15px; }
 body.bg-dark-contrast input { background: white; color: black; }
 body.bg-light-contrast input { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
@@ -126,8 +112,9 @@ body.bg-light-contrast .primary { filter: brightness(0.85); }
 .footer { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 12px; letter-spacing: 0.5px; z-index: 2; transition: color 0.3s; }
 body.bg-dark-contrast .footer { color: rgba(255,255,255,0.7); text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
 body.bg-light-contrast .footer { color: rgba(15, 23, 42, 0.8); text-shadow: none; }
-.footer b { color: var(--primary-color); filter: brightness(1.2); }
-body.bg-light-contrast .footer b { filter: brightness(0.8); }
+.footer b, .footer a { color: var(--primary-color); filter: brightness(1.2); text-decoration: none; }
+body.bg-light-contrast .footer b, body.bg-light-contrast .footer a { filter: brightness(0.8); }
+.footer a:hover { text-decoration: underline; }
 .card-stat.green { background: #d1fae5; }
 .card-stat.orange { background: #fde68a; }
 .card-stat.blue { background: #dbeafe; }
@@ -173,7 +160,6 @@ body.bg-light-contrast .mini-instructions span { filter: brightness(0.8); }
 .picker-container input[type="text"] { width: 100px; margin: 0; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; font-family: monospace; text-transform: uppercase; flex-shrink: 0; height: 38px; }
 .btn-bg-img-upload { background: #475569; color: white; border: none; padding: 0 14px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; height: 38px; display: inline-flex; align-items: center; white-space: nowrap; }
 .btn-bg-clear { background: #ef4444; color: white; border: none; padding: 0 14px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; height: 38px; display: inline-flex; align-items: center; white-space: nowrap; }
-
 .toast-container {
   position: fixed;
   bottom: 40px;
@@ -223,11 +209,8 @@ body.bg-light-contrast .toast-notification {
 <button class="btn-view" onclick="viewMasterlist()">Masterlist</button>
 </div>
 </div>
-
 <div class="container">
 <div class="center-stack-wrapper">
-
-  <!-- GLASS DASHBOARD HUD PLACED ABOVE AND MATCHING THE FORM THEME -->
   <div id="frontDashboardHud" class="front-dashboard">
     <div class="front-stat">
       <div class="front-title">Total</div>
@@ -246,8 +229,6 @@ body.bg-light-contrast .toast-notification {
       <div id="frontRateVal" class="front-value">0%</div>
     </div>
   </div>
-
-  <!-- CHECK IN CARD CONTEXT -->
   <div class="card">
     <h2 style="margin-top: 0; margin-bottom: 20px;">Guest Check-In</h2>
     <div class="mini-instructions">
@@ -261,12 +242,9 @@ body.bg-light-contrast .toast-notification {
     </form>
     <button class="secondary" onclick="resetForm()">Refresh</button>
   </div>
-
 </div>
 </div>
-
 <div id="toastContainer" class="toast-container"></div>
-
 <input type="file" id="csvFile" hidden accept=".csv, .xlsx, .xls" onchange="loadCSV(event)">
 <input type="file" id="bgImageFile" hidden accept="image/*" onchange="loadCustomBackgroundImage(event)">
 <div id="popup" class="popup" onclick="outside(event)">
@@ -276,7 +254,7 @@ body.bg-light-contrast .toast-notification {
 <div id="actions"></div>
 </div>
 </div>
-<div class="footer">Powered by: <b>Broadimagi</b></div>
+<div class="footer">Powered by: <a href="https://broadimagi.com" target="_blank"><b>Broadimagi</b></a></div>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbz4gaqDwu-CKdhSTfMJG7K9kE71LFGJGax1r1bv4-zMr7F5oY0WYePMBH46eGWFl53LFA/exec";
 const DEFAULT_THEME_COLOR = "#3b82f6";
@@ -294,6 +272,12 @@ const actionsNode = document.getElementById("actions");
 const inputNode = document.getElementById("nameInput");
 const statusNode = document.getElementById("simpleStatusText");
 const deviceBadgeNode = document.getElementById("deviceStatusIdentity");
+const frontDashboardHud = document.getElementById("frontDashboardHud");
+const frontTotalVal = document.getElementById("frontTotalVal");
+const frontCheckedVal = document.getElementById("frontCheckedVal");
+const frontPendingVal = document.getElementById("frontPendingVal");
+const frontRateVal = document.getElementById("frontRateVal");
+const toastContainer = document.getElementById("toastContainer");
 
 window.addEventListener("DOMContentLoaded", () => {
 setupDeviceIdentity();
@@ -343,7 +327,7 @@ const canvas = document.createElement("canvas"); const ctx = canvas.getContext("
 try {
 const imgData = ctx.getImageData(0, 0, 40, 40).data; let totalLuminance = 0;
 for (let i = 0; i < imgData.length; i += 4) { totalLuminance += (0.299 * imgData[i] + 0.587 * imgData[i+1] + 0.114 * imgData[i+2]); }
-const averageLuminance = totalLuminance / (canvas.width * canvas.height);
+const averageLuminance = totalLuminance / 1600;
 document.body.classList.remove("bg-dark-contrast", "bg-light-contrast");
 document.body.classList.add(averageLuminance > 140 ? "bg-light-contrast" : "bg-dark-contrast");
 } catch(err) { document.body.classList.add("bg-dark-contrast"); }
@@ -395,62 +379,53 @@ refreshFrontDashboardCounters();
 closePopup();
 } catch (err) { updateModeUI(false); showPopup("Sync Offline", "Could not connect to database endpoint.", "", "other"); }
 }
-
 function refreshFrontDashboardCounters() {
-  const hudNode = document.getElementById("frontDashboardHud");
-  const tNode = document.getElementById("frontTotalVal");
-  const cNode = document.getElementById("frontCheckedVal");
-  const pNode = document.getElementById("frontPendingVal");
-  const rNode = document.getElementById("frontRateVal");
-  if(!hudNode || !tNode || !cNode || !pNode || !rNode) return;
-
-  // Render metrics ONLY if data exists in masterlist
-  if (!masterlist || masterlist.length === 0) {
-    hudNode.style.display = "none";
+  if(!frontDashboardHud || !frontTotalVal || !frontCheckedVal || !frontPendingVal || !frontRateVal) return;
+  const total = masterlist.length;
+  if (total === 0) {
+    frontDashboardHud.style.display = "none";
     return;
   }
-
-  hudNode.style.display = "flex";
-  const total = masterlist.length;
-  const checked = masterlist.filter(x => x.Status === "Checked" || x.status === "Checked" || x.Status === "Checked-in").length;
+  frontDashboardHud.style.display = "flex";
+  let checked = 0;
+  for (let i = 0; i < total; i++) {
+    const s = masterlist[i].Status || masterlist[i].status;
+    if (s === "Checked" || s === "Checked-in") checked++;
+  }
   const pending = total - checked;
-  const rate = total > 0 ? Math.round((checked / total) * 100) : 0;
-
-  tNode.innerText = total;
-  cNode.innerText = checked;
-  pNode.innerText = pending;
-  rNode.innerText = rate + "%";
+  frontTotalVal.innerText = total;
+  frontCheckedVal.innerText = checked;
+  frontPendingVal.innerText = pending;
+  frontRateVal.innerText = total > 0 ? Math.round((checked / total) * 100) + "%" : "0%";
 }
-
 async function runBackgroundSyncHeartbeat() {
   if (!isLiveMode || currentPopupType === "suggestions" || currentPopupType === "confirmation") return;
   const currentSheetId = localStorage.getItem("connectedSheetUrl");
   if (!currentSheetId) return;
-
   try {
     const response = await fetch(`${API_URL}?sheetId=${encodeURIComponent(currentSheetId)}`);
     const freshData = await response.json();
-
     if (Array.isArray(freshData)) {
-      freshData.forEach(freshRow => {
-        const localMatch = masterlist.find(x => String(x.rowId) === String(freshRow.rowId));
+      const localMap = new Map();
+      for(let i = 0; i < masterlist.length; i++) {
+        localMap.set(String(masterlist[i].rowId), masterlist[i]);
+      }
+      for(let j = 0; j < freshData.length; j++) {
+        const freshRow = freshData[j];
+        const localMatch = localMap.get(String(freshRow.rowId));
         if (localMatch) {
-          const wasCheckedLocally = localMatch.Status === "Checked" || localMatch.status === "Checked" || localMatch.Status === "Checked-in";
+          const wasChecked = localMatch.Status === "Checked" || localMatch.status === "Checked" || localMatch.Status === "Checked-in";
           const isCheckedLive = freshRow.Status === "Checked" || freshRow.status === "Checked" || freshRow.Status === "Checked-in";
-          
-          if (!wasCheckedLocally && isCheckedLive) {
+          if (!wasChecked && isCheckedLive) {
             let activeNotificationCols = settings.notificationColumns && settings.notificationColumns.length > 0
               ? settings.notificationColumns
               : Object.keys(freshRow).filter(x => x !== "rowId" && x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time");
-
             let labelString = activeNotificationCols.map(c => freshRow[c]).filter(Boolean).join(" — ");
             if (!labelString) labelString = freshRow.Name || freshRow.name || "Guest Label";
-
             triggerStreamToastNotification(labelString);
           }
         }
-      });
-      
+      }
       masterlist = freshData;
       refreshFrontDashboardCounters();
       if (currentPopupType === "masterlist") { renderMasterlistRowsHTMLOnly(); }
@@ -459,7 +434,6 @@ async function runBackgroundSyncHeartbeat() {
     console.log("Sync heartbeat idle.");
   }
 }
-
 function openFile(){ document.getElementById("csvFile").click(); }
 function loadCSV(e) {
 const file = e.target.files[0]; if (!file) return;
@@ -481,7 +455,17 @@ reader.readAsText(file);
 function checkName(){
 const val = inputNode.value.toLowerCase().trim(); if(!val) return;
 let activeSearchCols = settings.suggestionColumns && settings.suggestionColumns.length > 0 ? settings.suggestionColumns : Object.keys(masterlist[0] || {}).filter(x => x !== "rowId" && x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time");
-const sug = masterlist.filter(i => activeSearchCols.some(colName => i[colName] && String(i[colName]).toLowerCase().includes(val)));
+const sug = [];
+for (let i = 0; i < masterlist.length; i++) {
+  const row = masterlist[i];
+  for (let j = 0; j < activeSearchCols.length; j++) {
+    const colName = activeSearchCols[j];
+    if (row[colName] && String(row[colName]).toLowerCase().includes(val)) {
+      sug.push(row);
+      break;
+    }
+  }
+}
 if(!sug.length) return showPopup("Not Found","No match found for configured columns.", "", "other");
 sug.sort((a, b) => (activeSearchCols.some(c => String(b[c]).toLowerCase() === val) ? 1 : 0) - (activeSearchCols.some(c => String(a[c]).toLowerCase() === val) ? 1 : 0));
 const displayLimit = sug.slice(0, 5); currentFocusIdx = 0;
@@ -503,19 +487,17 @@ function goBackToSuggestions() {
 showPopup("Select Guest Profile Matched", cachedSuggestionsHTML, "", "suggestions");
 setTimeout(() => { const cards = document.querySelectorAll(".suggestion-card"); if(cards.length > 0) { if(currentFocusIdx < 0 || currentFocusIdx >= cards.length) currentFocusIdx = 0; updateCardFocusUI(cards); } }, 10);
 }
-
 function triggerStreamToastNotification(nameString) {
-  const container = document.getElementById("toastContainer"); if (!container) return;
-  while (container.children.length >= 5) {
-    container.removeChild(container.children[0]);
+  if (!toastContainer) return;
+  while (toastContainer.children.length >= 5) {
+    toastContainer.removeChild(toastContainer.children[0]);
   }
   const toast = document.createElement("div"); 
   toast.className = "toast-notification"; 
   toast.innerHTML = `<span class="toast-dot">●</span> <b>${nameString}</b> checked in`;
-  container.appendChild(toast); 
-  setTimeout(() => { if (toast.parentNode === container) toast.remove(); }, 45000);
+  toastContainer.appendChild(toast); 
+  setTimeout(() => { if (toast.parentNode === toastContainer) toast.remove(); }, 45000);
 }
-
 async function checkIn(){
 if (currentIndex === null) return;
 const time = new Date().toLocaleString(), targetGuest = masterlist[currentIndex];
@@ -542,13 +524,10 @@ masterlist[currentIndex].Status = "Checked"; masterlist[currentIndex].Time = tim
 if (!isLiveMode) localStorage.setItem("masterlist", JSON.stringify(masterlist));
 let activeNotificationCols = settings.notificationColumns && settings.notificationColumns.length > 0 ? settings.notificationColumns : Object.keys(targetGuest).filter(x => x !== "rowId" && x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time");
 let formattedText = activeNotificationCols.map(c => targetGuest[c]).filter(Boolean).join(" — ") || targetGuest.Name || targetGuest.name || "Guest Profile";
-
 triggerStreamToastNotification(formattedText);
 refreshFrontDashboardCounters();
-
 showPopup("Checked-In Successfully", settings.confirmColumns.map(c => `<b>${c}:</b> ${masterlist[currentIndex][c] || ""}`).join("<br>") + `<hr><b>Status:</b> Checked<br><b>Time:</b> ${time}`, `<button onclick="afterCheckIn()" style="background:#10b981;color:white;">Close</button>`, "other");
 }
-
 function openSettings(){
 const savedUrl = localStorage.getItem("connectedSheetUrl") || "", hexValue = settings.currentThemeColor || DEFAULT_THEME_COLOR, hasBgImg = !!localStorage.getItem("customThemePicture");
 const headers = Object.keys(masterlist[0]||{}).filter(x => x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time" && x !== "rowId");
@@ -561,16 +540,20 @@ headers.forEach(h => { hHtml += `<tr><td><b>${h}</b></td><td class="text-center"
 hHtml += `</tbody></table>`; showPopup("System Configuration", hHtml, "", "other");
 }
 function toggleGridSetting(type, field, isChecked) { if (!settings[type]) settings[type] = []; if (isChecked) { if (!settings[type].includes(field)) settings[type].push(field); } else { settings[type] = settings[type].filter(x => x !== field); } localStorage.setItem("settings", JSON.stringify(settings)); }
-
 function viewMasterlist(){
 if (!masterlist.length) return showPopup("No Data","No uploaded records mapped.", "", "other");
 showPopup("Masterlist", `<div id="masterlistContainer"></div>`, "", "masterlist");
 renderMasterlistRowsHTMLOnly();
 }
-
 function renderMasterlistRowsHTMLOnly() {
 const targetBox = document.getElementById("masterlistContainer"); if(!targetBox) return;
-const total = masterlist.length, checked = masterlist.filter(x => x.Status === "Checked" || x.status === "Checked" || x.Status === "Checked-in").length, pending = total - checked;
+const total = masterlist.length;
+let checked = 0;
+for(let i=0; i<total; i++) {
+  let s = masterlist[i].Status || masterlist[i].status;
+  if(s === "Checked" || s === "Checked-in") checked++;
+}
+const pending = total - checked;
 const rate = total > 0 ? Math.round((checked / total) * 100) : 0;
 let headers = settings.showColumns.length ? settings.showColumns : Object.keys(masterlist[0]).filter(x => x !== "Status" && x !== "Time" && x !== "UID" && x !== "status" && x !== "time" && x !== "rowId");
 let headerRow = headers.map(h => `<th>${h}</th>`).join("") + `<th>Status</th>`;
@@ -581,7 +564,6 @@ return `<tr>${headers.map(h => `<td>${item[h] || ""}</td>`).join("")}<td>${isCh 
 let buttons = isLiveMode ? `<div style="margin-top:15px;text-align:center;"><p style="font-size:12px; color:#64748b;">🔄 Auto-refreshing every 15 seconds...</p></div>` : `<div style="margin-top:15px;text-align:center;"><button onclick="download()">Download</button></div><div style="margin-top:10px;text-align:center;"><button onclick="resetAll()" style="background:#7c3aed;color:white;">Clear All Status</button></div><div style="margin-top:10px;text-align:center;"><button onclick="clearAllData()" style="background:#ef4444;color:white;">Clear All Uploaded Data</button></div>`;
 targetBox.innerHTML = `<div class="dashboard"><div class="card-stat"><div class="stat-title">Total</div><div class="stat-value">${total}</div></div><div class="card-stat green"><div class="stat-title">Checked</div><div class="stat-value">${checked}</div></div><div class="card-stat orange"><div class="stat-title">Pending</div><div class="stat-value">${pending}</div></div><div class="card-stat blue"><div class="stat-title">Attendance</div><div class="stat-value">${rate}%</div></div></div><table><tr>${headerRow}</tr>${rows}</table>${buttons}`;
 }
-
 function download() {
 if (masterlist.length === 0) return;
 let csv = Object.keys(masterlist[0]).join(",") + "\n"; masterlist.forEach(item => { csv += Object.values(item).join(",") + "\n"; });
